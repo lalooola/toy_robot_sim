@@ -30,29 +30,38 @@ var grid = {
 };
 
 /**
- * The robot object to be moved within the grid.
- * @type {{facing: string, x: number, y: number, move: Function}}
+ * Object containing the facing values, the left and right values for rotation, and the move function
+ * for each facing direction.
+ *
+ * @type {{
+ * NORTH: {name: string, left: string, right: string, move: Function},
+ * EAST: {name: string, left: string, right: string, move: Function},
+ * SOUTH: {name: string, left: string, right: string, move: Function},
+ * WEST: {name: string, left: string, right: string, move: Function}}}
  */
-var robot = {
-    facing: "NORTH",
-    x: 0,
-    y: 0,
-    move: function() {
-        move[this.facing]();
-    }
+var facing = {
+    NORTH: { name: "NORTH", left: "WEST", right: "EAST", move: function () { if (robot.y < grid.height) robot.y++;} },
+    EAST: { name: "EAST", left: "NORTH", right: "SOUTH", move: function () { if (robot.x < grid.width) robot.x++; } },
+    SOUTH: { name: "SOUTH", left: "EAST", right: "WEST", move: function () { if (robot.y > 0) robot.y--; } },
+    WEST: { name: "WEST", left: "SOUTH", right: "NORTH", move: function () { if (robot.x > 0) robot.x--; } }
 };
 
 /**
- * Checks the grid boundaries, and moves the robot by 1 in the current facing direction.
+ * The robot object to be moved within the grid.
  * @type {{
- * NORTH: (function(this:{facing: string, x: number, y: number, move: Function})),
- * SOUTH: (function(this:{facing: string, x: number, y: number, move: Function})),
- * EAST: (function(this:{facing: string, x: number, y: number, move: Function})),
- * WEST: (function(this:{facing: string, x: number, y: number, move: Function}))}}
+ * facing: string, x: number, y: number, move: Function}}
  */
-var move = {
-    NORTH: function () { if (this.y < grid.height) this.y++;}.bind(robot),
-    SOUTH: function () { if (this.y > 0) this.y--; }.bind(robot),
-    EAST: function () { if (this.x < grid.width) this.x++; }.bind(robot),
-    WEST: function () { if (this.x > 0) this.x--; }.bind(robot)
+var robot = {
+    facing: facing.NORTH,
+    x: 0,
+    y: 0,
+    move: function() {
+        this.facing.move();
+    },
+    left: function() {
+        this.facing = facing[this.facing.left];
+    },
+    right: function() {
+        this.facing = facing[this.facing.right];
+    }
 };

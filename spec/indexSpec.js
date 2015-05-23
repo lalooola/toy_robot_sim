@@ -2,11 +2,71 @@
  * Author: Laura Whellans
  */
 
+describe("Rotate", function() {
+    describe("Left", function() {
+
+        it("should rotate from NORTH to WEST", function() {
+            robot.facing = facing.NORTH;
+            robot.left();
+            expect(robot.facing).toBe(facing.WEST);
+        });
+
+        it("should rotate from WEST to SOUTH", function() {
+            robot.facing = facing.WEST;
+            robot.left();
+            expect(robot.facing).toBe(facing.SOUTH);
+        });
+
+        it("should rotate from SOUTH to EAST", function() {
+            robot.facing = facing.SOUTH;
+            robot.left();
+            expect(robot.facing).toBe(facing.EAST);
+        });
+
+        it("should rotate from EAST to NORTH", function() {
+            robot.facing = facing.EAST;
+            robot.left();
+            expect(robot.facing).toBe(facing.NORTH);
+        });
+
+    });
+
+    describe("Right", function() {
+
+        it("should rotate from NORTH to EAST", function() {
+            robot.facing = facing.NORTH;
+            robot.right();
+            expect(robot.facing).toBe(facing.EAST);
+        });
+
+        it("should rotate from EAST to SOUTH", function() {
+            robot.facing = facing.EAST;
+            robot.right();
+            expect(robot.facing).toBe(facing.SOUTH);
+        });
+
+        it("should rotate from SOUTH to WEST", function() {
+            robot.facing = facing.SOUTH;
+            robot.right();
+            expect(robot.facing).toBe(facing.WEST);
+        });
+
+        it("should rotate from WEST to NORTH", function() {
+            robot.facing = facing.WEST;
+            robot.right();
+            expect(robot.facing).toBe(facing.NORTH);
+        });
+
+
+
+    });
+});
+
 describe("Move", function() {
     describe("East", function() {
 
         beforeEach(function() {
-            robot.facing = "EAST";
+            robot.facing = facing.EAST;
             robot.x = 0;
             robot.y = 0;
         });
@@ -33,7 +93,7 @@ describe("Move", function() {
     describe("West", function() {
 
         beforeEach(function() {
-            robot.facing = "WEST";
+            robot.facing = facing.WEST;
             robot.x = 4;
             robot.y = 4;
         });
@@ -58,7 +118,7 @@ describe("Move", function() {
     describe("North", function() {
 
         beforeEach(function() {
-            robot.facing = "NORTH";
+            robot.facing = facing.NORTH;
             robot.x = 0;
             robot.y = 0;
         });
@@ -84,7 +144,7 @@ describe("Move", function() {
     describe("South", function() {
 
         beforeEach(function() {
-            robot.facing = "SOUTH";
+            robot.facing = facing.SOUTH;
             robot.x = 4;
             robot.y = 4;
         });
