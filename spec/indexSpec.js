@@ -40,12 +40,12 @@ describe("Run Instruction", function() {
             expect(placedRobot.x).toEqual(1);
         });
 
-        it("should place the robot.x at 1", function() {
+        it("should place the robot.y at 3", function() {
             runInstruction("place 1, 3, north");
             expect(placedRobot.y).toEqual(3);
         });
 
-        it("should place the robot.x at 1", function() {
+        it("should place the robot.facing north", function() {
             runInstruction("place 1, 3, north");
             expect(placedRobot.facing.name).toEqual("NORTH");
         });
