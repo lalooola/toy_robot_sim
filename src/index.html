@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="robot.js"></script>
+    <script src="index.js"></script>
+
+    <title>Toy Robot Simulator</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>Welcome to the Toy Robot Simulator</h1>
+    </header>
+
+    <section>
+
+        <article>
+            <header>
+                <h2>Toy Robot Simulator Instruction Input</h2>
+            </header>
+            <form name="toy-robot-form">
+                <div>
+                    <div><label for="instruction-input">Instruction Input:</label></div>
+                    <input type="text" id="instruction-input" rows="8" style="width: 100%"/>
+                </div>
+
+                <div>
+                    <button type="button" onClick="submitInstruction()">Submit</button>
+                    <button type="reset">Reset</button>
+                </div>
+            </form>
+        </article>
+
+        <article>
+            <header>
+                <h2>Toy Robot Simulator Output</h2>
+            </header>
+            <p id="output"></p>
+        </article>
+
+
+    </section>
+
+    <footer>
+        <p>Author: Laura Whellans</p>
+    </footer>
+
+</body>
+
+</html>

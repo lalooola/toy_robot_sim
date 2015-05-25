@@ -20,7 +20,7 @@ describe("Test Example Data", function() {
         });
 
         it("should create report with final position details", function() {
-            var expectedReport = "Final Robot Position: " +
+            var expectedReport = "Robot Position: " +
                 "X: " + expectedX +
                 ", Y: " + expectedY +
                 ", Facing: " + expectedFacing;
@@ -30,19 +30,23 @@ describe("Test Example Data", function() {
     }
 
     describe("Example Input A.", function() {
-        var testRobot = new Robot(0, 0, "NORTH");
+        var testRobot = new Robot();
+        testRobot.place(0, 0, "NORTH");
         testRobot.move();
         testExampleData(testRobot, 0, 1, "NORTH");
     });
 
     describe("Example Input B.", function() {
-        var testRobot = new Robot(0, 0, "NORTH");
+        var testRobot = new Robot();
+        testRobot.place(0, 0, "NORTH");
+
         testRobot.left();
         testExampleData(testRobot, 0, 0, "WEST");
     });
 
     describe("Example Input C.", function() {
-        var testRobot = new Robot(1, 2, "EAST");
+        var testRobot = new Robot();
+        testRobot.place(1, 2, "EAST");
 
         testRobot.move();
         testRobot.move();
@@ -52,14 +56,18 @@ describe("Test Example Data", function() {
     });
 });
 
-function rotateLeft(testRobot, expectedFacing) {
+function rotateLeft(startingPlace, expectedFacing) {
+    var testRobot = new Robot();
+    testRobot.place(startingPlace.x, startingPlace.y, startingPlace.f);
     it("should rotate left from " + testRobot.facing.name + " to " + expectedFacing, function() {
         testRobot.left();
         expect(testRobot.facing.name).toBe(expectedFacing);
     });
 }
 
-function rotateRight(testRobot, expectedFacing) {
+function rotateRight(startingPlace, expectedFacing) {
+    var testRobot = new Robot();
+    testRobot.place(startingPlace.x, startingPlace.y, startingPlace.f);
     it("should rotate Right from " + testRobot.facing.name + " to " + expectedFacing, function() {
         testRobot.right();
         expect(testRobot.facing.name).toBe(expectedFacing);
@@ -67,27 +75,26 @@ function rotateRight(testRobot, expectedFacing) {
 }
 describe("Rotate", function() {
     describe("Left", function() {
-        rotateLeft(new Robot(0, 0, "NORTH"), "WEST");
-        rotateLeft(new Robot(0, 0, "WEST"), "SOUTH");
-        rotateLeft(new Robot(0, 0, "SOUTH"), "EAST");
-        rotateLeft(new Robot(0, 0, "EAST"), "NORTH");
+        rotateLeft({x: 0, y: 0, f: "NORTH"}, "WEST");
+        rotateLeft({x: 0, y: 0, f: "WEST"}, "SOUTH");
+        rotateLeft({x: 0, y: 0, f: "SOUTH"}, "EAST");
+        rotateLeft({x: 0, y: 0, f: "EAST"}, "NORTH");
     });
 
     describe("Right", function() {
-        rotateRight(new Robot(0, 0, "NORTH"), "EAST");
-        rotateRight(new Robot(0, 0, "EAST"), "SOUTH");
-        rotateRight(new Robot(0, 0, "SOUTH"), "WEST");
-        rotateRight(new Robot(0, 0, "WEST"), "NORTH");
+        rotateRight({x: 0, y: 0, f: "NORTH"}, "EAST");
+        rotateRight({x: 0, y: 0, f: "EAST"}, "SOUTH");
+        rotateRight({x: 0, y: 0, f: "SOUTH"}, "WEST");
+        rotateRight({x: 0, y: 0, f: "WEST"}, "NORTH");
     });
 });
 
 describe("Move", function() {
     describe("East", function() {
 
-        var testRobot = Object();
-
+        var testRobot = new Robot();
         beforeEach(function() {
-            testRobot = new Robot(0, 0, "EAST")
+            testRobot.place(0, 0, "EAST");
         });
 
         it("should increment x by 1", function() {
@@ -109,10 +116,10 @@ describe("Move", function() {
 
     describe("West", function() {
 
-        var testRobot = Object();
+        var testRobot = new Robot();
 
         beforeEach(function() {
-            testRobot = new Robot(4, 4, "WEST")
+            testRobot.place(4, 4, "WEST");
         });
 
         it("should decrement x by 1", function() {
@@ -134,10 +141,9 @@ describe("Move", function() {
 
     describe("North", function() {
 
-        var testRobot = Object();
-
+        var testRobot = new Robot();
         beforeEach(function() {
-            testRobot = new Robot(0, 0, "NORTH")
+            testRobot.place(0, 0, "NORTH");
         });
 
         it("should increment y by 1", function() {
@@ -159,10 +165,9 @@ describe("Move", function() {
 
     describe("South", function() {
 
-        var testRobot = Object();
-
+        var testRobot = new Robot();
         beforeEach(function() {
-            testRobot = new Robot(4, 4, "SOUTH")
+            testRobot.place(4, 4, "SOUTH");
         });
 
         it("should decrement y by 1", function() {
@@ -180,5 +185,18 @@ describe("Move", function() {
             testRobot.move(); // expect robot.y to not decrease less than 0
             expect(testRobot.y).toEqual(0);
         });
+    });
+});
+describe("Is Placed", function() {
+
+    var testRobot = new Robot();
+
+    it("should return false if robot has not been placed", function() {
+        expect(testRobot.isPlaced()).toEqual(false);
+    });
+
+    it("should return false if robot has not been placed", function() {
+        testRobot.place(4, 4, "SOUTH");
+        expect(testRobot.isPlaced()).toEqual(true);
     });
 });

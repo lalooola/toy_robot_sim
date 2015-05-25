@@ -1,4 +1,4 @@
-function Robot(x, y, startFacing) {
+function Robot() {
     /**
      * Object containing the facing values, the left and right values for rotation, and the move function
      * for each facing direction.
@@ -16,9 +16,9 @@ function Robot(x, y, startFacing) {
         WEST: { name: "WEST", left: "SOUTH", right: "NORTH", move: function () { if (this.x > 0) this.x--; }.bind(this) }
     };
 
-    this.facing = facing[startFacing];
-    this.x = x;
-    this.y = y;
+    this.facing = {};
+    this.x;
+    this.y;
 
     this.move = function () {
         this.facing.move();
@@ -32,11 +32,21 @@ function Robot(x, y, startFacing) {
         this.facing = facing[this.facing.right];
     };
 
+    this.place = function (x, y, f) {
+        this.facing = facing[f];
+        this.x = x;
+        this.y = y;
+    };
+
     this.report = function () {
-        return "Final Robot Position: " +
+        return "Robot Position: " +
             "X: " + this.x +
             ", Y: " + this.y +
             ", Facing: " + this.facing.name;
+    };
+
+    this.isPlaced = function () {
+        return !!this.x && !!this.y && !!this.facing;
     }
 
 }
