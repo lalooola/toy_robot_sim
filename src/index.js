@@ -1,24 +1,8 @@
 /**
  * Author: Laura Whellans
+ *
+ * This class handles the user input and validation for controlling the Robot.
  */
-
-//  [0, 4] | [1, 4] | [2, 4] | [3, 4] | [4, 4]
-//
-//  [0, 3] | [1, 3] | [2, 3] | [3, 3] | [4, 3]
-//
-//  [0, 2] | [1, 2] | [2, 2] | [3, 2] | [4, 2]
-//
-//  [0, 1] | [1, 1] | [2, 1] | [3, 1] | [4, 1]
-//
-//  [0, 0] | [1, 0] | [2, 0] | [3, 0] | [4, 0]
-
-//        N
-//        ↑
-//        |
-//  W <---O---> E
-//        |
-//        ↓
-//        S
 
 /**
  * The Grid Constraints.
@@ -29,19 +13,10 @@ var grid = {
     height: 4
 };
 
-var EMPTY_INSTRUCTION_ERROR = "No instruction was entered";
-var PLACE_INSTRUCTION_EXPECTED_ERROR = "Robot has not been placed - Use the 'PLACE X, Y, F' command to place";
-var BAD_PLACE_INSTRUCTION_ERROR = "Bad place instruction";
-var INVALID_X = "The X coordinate entered is invalid - ensure X is a number between 0 and " + grid.width;
-var INVALID_Y = "The Y coordinate entered is invalid - ensure Y is a number between 0 and " + grid.height;
-var BOUNDS_EXCEEDED_Y = "Y bounds exceeded";
-var INVALID_FACING = "The facing you entered is invalid";
-
-
-var instructionError = "";
-
-var placedRobot = new Robot();
-
+/**
+ * Valid facing directions for the robot
+ * @type {{NORTH: string, SOUTH: string, EAST: string, WEST: string}}
+ */
 var directions = {
     NORTH: "NORTH",
     SOUTH: "SOUTH",
@@ -49,21 +24,67 @@ var directions = {
     WEST: "WEST"
 }
 
+/**
+ * Valid instructions for the robot
+ * @type {{PLACE: {value: string, function: Function},
+ * MOVE: {value: string, function: Function},
+ * LEFT: {value: string, function: Function},
+ * RIGHT: {value: string, function: Function},
+ * REPORT: {value: string, function: Function}}}
+ */
 var commands = {
-    PLACE: { value: "PLACE"},
-    MOVE: { value: "MOVE" },
-    LEFT: { value: "LEFT" },
-    RIGHT: { value: "RIGHT" },
-    REPORT: { value: "REPORT" }
+    PLACE: { value: "PLACE", function: function(x, y, facing) { placedRobot.place(x, y, facing) }},
+    MOVE: { value: "MOVE", function: function() { placedRobot.move() }},
+    LEFT: { value: "LEFT", function: function() { placedRobot.left() }},
+    RIGHT: { value: "RIGHT", function: function() { placedRobot.right() }},
+    REPORT: { value: "REPORT", function: function() { displayReport(placedRobot.report()) }}
 };
 
+/**
+ * Error String Constants
+ */
+var EMPTY_INSTRUCTION_ERROR = "No instruction was entered";
+var PLACE_INSTRUCTION_EXPECTED_ERROR = "Robot has not been placed - Use the 'PLACE X, Y, F' command to place";
+var BAD_INSTRUCTION_ERROR = "Bad instruction. Acceptable instructions are: " + Object.keys(commands).join(", ");
+var INVALID_X = "The X coordinate entered is invalid - ensure X is a number between 0 and " + grid.width;
+var INVALID_Y = "The Y coordinate entered is invalid - ensure Y is a number between 0 and " + grid.height;
+var INVALID_FACING = "The facing you entered is invalid";
+
+/**
+ * Global instruction error string for display
+ * @type {string}
+ */
+var instructionError = "";
+
+/**
+ * The placed robot to be moved around the table
+ * @type {Robot}
+ */
+var placedRobot = new Robot();
+
+/**
+ * Gets the instruction from the user input.
+ * Displays an instruction error if error occurs.
+ */
 function submitInstruction() {
+    instructionError = "";
     // get the value of the instructions and separate it by new line into an array
     var rawInstructions = document.getElementById("instruction-input").value.toUpperCase();
     runInstruction(String(rawInstructions));
-    console.log(instructionError);
+    document.getElementById("instruction-input").value = "";
+    if (instructionError) {
+        document.getElementById("errorDisplay").innerHTML = instructionError;
+    } else {
+        document.getElementById("errorDisplay").innerHTML = "";
+
+    }
 }
 
+/**
+ * Checks validity of instruction, and state of the current robot.
+ * Runs the instruction.
+ * @param instruction
+ */
 function runInstruction(instruction) {
     if (!instruction || instruction === undefined || instruction.trim() === "") {
         instructionError = EMPTY_INSTRUCTION_ERROR;
@@ -77,6 +98,7 @@ function runInstruction(instruction) {
             return;
         }
         placedRobot.place(placeObj.x, placeObj.y, placeObj.facing);
+        return;
 
     }
     //check if robot has been placed
@@ -85,8 +107,38 @@ function runInstruction(instruction) {
         return;
     }
 
+    // at this point robot should be placed and ready for other instructions
+    if (isValidInstruction(instruction)) {
+        commands[instruction.toUpperCase()].function();
+    } else {
+        instructionError = BAD_INSTRUCTION_ERROR;
+    }
+
 }
 
+/**
+ * Validation check for instruction string.
+ * @param instruction
+ * @returns {boolean}
+ */
+function isValidInstruction(instruction) {
+    if (isEmptyString(instruction)) {
+        instructionError = EMPTY_INSTRUCTION_ERROR;
+        return false;
+    }
+
+    if (instruction.split(" ").length > 1) {
+        return false
+    }
+
+    return !!commands[instruction.toUpperCase()];
+}
+
+/**
+ * Validation check for PLACE instruction string
+ * @param instruction
+ * @returns {boolean}
+ */
 function isPlaceInstruction(instruction) {
     if (!instruction || instruction === undefined || instruction.trim() === "") {
         instructionError = EMPTY_INSTRUCTION_ERROR;
@@ -96,19 +148,20 @@ function isPlaceInstruction(instruction) {
     return instructionArray[0].trim() === commands.PLACE.value;
 }
 
+/**
+ * Extracts the PLACE instruction into an object to contain the x, y, and facing
+ * for the robot to be placed.
+ * @param instruction
+ * @returns {{x: Number, y: Number, facing: string}}
+ */
 function extractPlaceInstruction(instruction) {
     instructionError = "";
     if (!isPlaceInstruction(instruction)) {
-        instructionError = BAD_PLACE_INSTRUCTION_ERROR;
+        instructionError = BAD_INSTRUCTION_ERROR;
         return;
     }
 
     var instructionArray = instruction.toUpperCase().split(" ");
-    if (instructionArray.length !== 4) {
-
-        instructionError = BAD_PLACE_INSTRUCTION_ERROR;
-        return;
-    }
 
     var extractedInstructionArray = instructionArray.splice(1).join("").split(",");
 
@@ -138,36 +191,47 @@ function extractPlaceInstruction(instruction) {
 
 }
 
+/**
+ * Displays the report to the user interface.
+ * @param report
+ */
+function displayReport(report) {
+    console.log("report", report);
+    document.getElementById('output').innerHTML = report;
+}
+
+/**
+ * Validation check for X coordinate, checking that it is a number, and that is is within the grids bounds (width)
+ * @param x
+ * @returns {boolean}
+ */
 function isValidX(x) {
     return !isNaN(x) && parseInt(x) >= 0 && parseInt(x) <= grid.width;
 }
 
+/**
+ * Validation check for Y coordinate, checking that it is a number, and that is is within the grids bounds (height)
+ * @param x
+ * @returns {boolean}
+ */
 function isValidY(y) {
     return !isNaN(y) && parseInt(y) >= 0 && parseInt(y) <= grid.height;
 }
 
+/**
+ * Validation check for facing - checks that string is a valid direction
+ * @param facing
+ * @returns {boolean}
+ */
 function isValidFacing(facing) {
-    if (!facing || facing === undefined || facing.trim() === "") {
-        return false;
-    }
-    return !!directions[facing.toUpperCase()];
+    return !isEmptyString(facing) && !!directions[facing.toUpperCase()];
 }
 
-
-
-function extractPlaceCommand(stringCommand) {
-    var placeInsArray = stringCommand.split(/,/);
-
-    if (placeInsArray.length === 3 &&
-        placeInsArray[0].trim().indexOf(commands.PLACE) == 0) {
-
-        // remove place command
-        placeInsArray[0] = placeInsArray[0].substr(commands.PLACE.length, placeInsArray[0].length);
-
-        return placeInsArray;
-
-    } else {
-        throw new Error("Bad input data");
-    }
+/**
+ * Util function that checks if a string is empty
+ * @param s
+ * @returns {boolean}
+ */
+function isEmptyString(s) {
+    return !s || s === undefined || s.trim() === "";
 }
-

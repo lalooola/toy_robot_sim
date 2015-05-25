@@ -2,53 +2,54 @@
 
 <html>
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <script src="robot.js"></script>
-    <script src="index.js"></script>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <script src="robot.js"></script>
+        <script src="index.js"></script>
+        <link href="style.css" rel="stylesheet">
 
-    <title>Toy Robot Simulator</title>
-</head>
+        <title>Toy Robot Simulator</title>
+    </head>
 
-<body>
+    <body>
 
-    <header>
-        <h1>Welcome to the Toy Robot Simulator</h1>
-    </header>
+        <header>
+            <h1>Toy Robot Simulator</h1>
+        </header>
 
-    <section>
+        <section>
 
-        <article>
-            <header>
-                <h2>Toy Robot Simulator Instruction Input</h2>
-            </header>
-            <form name="toy-robot-form">
+            <article class="left">
+                <header>
+                    <h2>Toy Robot Simulator Instruction Input</h2>
+                </header>
                 <div>
                     <div><label for="instruction-input">Instruction Input:</label></div>
-                    <input type="text" id="instruction-input" rows="8" style="width: 100%"/>
+                    <input type="text"
+                           id="instruction-input"
+                           onkeydown="if (event.keyCode == 13) submitInstruction();"/>
                 </div>
+                <div id="errorDisplay" class="error"></div>
 
                 <div>
                     <button type="button" onClick="submitInstruction()">Submit</button>
-                    <button type="reset">Reset</button>
                 </div>
-            </form>
-        </article>
+            </article>
 
-        <article>
-            <header>
-                <h2>Toy Robot Simulator Output</h2>
-            </header>
-            <p id="output"></p>
-        </article>
+            <article class="right">
+                <header>
+                    <h2>Toy Robot Simulator Output</h2>
+                </header>
+                <p id="output"></p>
+            </article>
 
 
-    </section>
+        </section>
 
-    <footer>
-        <p>Author: Laura Whellans</p>
-    </footer>
+        <footer class="clearfix">
+            <p>Author: Laura Whellans</p>
+        </footer>
 
-</body>
+    </body>
 
 </html>

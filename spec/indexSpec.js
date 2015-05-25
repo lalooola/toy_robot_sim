@@ -51,7 +51,77 @@ describe("Run Instruction", function() {
         });
     });
 
+    describe("Move Robot", function () {
 
+        it("should move the robot along X axis", function() {
+            runInstruction("place 0, 0, north");
+            runInstruction("move");
+            expect(placedRobot.y).toEqual(1);
+        });
+
+        it("should move the robot along X axis", function() {
+            runInstruction("place 0, 0, east");
+            runInstruction("move");
+            expect(placedRobot.x).toEqual(1);
+        });
+
+    });
+
+    describe("Rotate", function () {
+        describe("Left", function () {
+
+            it("should rotate from NORTH to WEST", function() {
+                runInstruction("place 0, 0, north");
+                runInstruction("left");
+                expect(placedRobot.facing.name).toEqual("WEST");
+            });
+
+            it("should rotate from WEST to SOUTH", function() {
+                runInstruction("place 0, 0, west");
+                runInstruction("left");
+                expect(placedRobot.facing.name).toEqual("SOUTH");
+            });
+
+            it("should rotate from SOUTH to EAST", function() {
+                runInstruction("place 0, 0, south");
+                runInstruction("left");
+                expect(placedRobot.facing.name).toEqual("EAST");
+            });
+
+            it("should rotate from EAST to NORTH", function() {
+                runInstruction("place 0, 0, east");
+                runInstruction("left");
+                expect(placedRobot.facing.name).toEqual("NORTH");
+            });
+
+        });
+        describe("Right", function () {
+
+            it("should rotate from NORTH to EAST", function() {
+                runInstruction("place 0, 0, north");
+                runInstruction("right");
+                expect(placedRobot.facing.name).toEqual("EAST");
+            });
+
+            it("should rotate from EAST to SOUTH", function() {
+                runInstruction("place 0, 0, east");
+                runInstruction("right");
+                expect(placedRobot.facing.name).toEqual("SOUTH");
+            });
+
+            it("should rotate from SOUTH to WEST", function() {
+                runInstruction("place 0, 0, south");
+                runInstruction("right");
+                expect(placedRobot.facing.name).toEqual("WEST");
+            });
+
+            it("should rotate from WEST to NORTH", function() {
+                runInstruction("place 0, 0, west");
+                runInstruction("right");
+                expect(placedRobot.facing.name).toEqual("NORTH");
+            });
+        });
+    });
 });
 
 describe("Is Place Instruction.", function() {
@@ -97,15 +167,9 @@ describe("Extract Place Instruction.", function() {
         instructionError = "";
     });
 
-    it("should create 'BAD_PLACE_INSTRUCTION_ERROR' error if instruction is not a PLACE command.", function() {
+    it("should create 'BAD_INSTRUCTION_ERROR' error if instruction is not a PLACE command.", function() {
         extractPlaceInstruction("something");
-        expect(instructionError).toEqual(BAD_PLACE_INSTRUCTION_ERROR);
-    });
-
-
-    it("should create 'BAD_PLACE_INSTRUCTION_ERROR' error if instruction does not contain the place args command.", function() {
-        extractPlaceInstruction("place 1, 3");
-        expect(instructionError).toEqual(BAD_PLACE_INSTRUCTION_ERROR);
+        expect(instructionError).toEqual(BAD_INSTRUCTION_ERROR);
     });
 
     it("should create 'INVALID_X' error if instructions X arg is invalid", function() {
@@ -131,9 +195,6 @@ describe("Extract Place Instruction.", function() {
         };
         expect(extractPlaceInstruction("place 0, 2, north")).toEqual(expectedPlacingObj);
     });
-
-
-
 
 });
 
@@ -232,7 +293,6 @@ describe("is Valid facing.", function() {
         expect(isValidFacing("   ")).toEqual(false);
     });
 
-
     it("should return false if facing is an invalid direction", function() {
         expect(isValidFacing("something")).toEqual(false);
     });
@@ -271,4 +331,57 @@ describe("is Valid facing.", function() {
 
 });
 
+describe("is Valid instruction.", function() {
+
+    it("should return false if instruction is null", function () {
+        expect(isValidInstruction()).toEqual(false);
+    });
+
+    it("should return false if instruction is empty string", function () {
+        expect(isValidInstruction("")).toEqual(false);
+    });
+
+    it("should return false if instruction is a string of spaces", function () {
+        expect(isValidInstruction("   ")).toEqual(false);
+    });
+
+    it("should return false if instruction has more then one word", function () {
+        expect(isValidInstruction("move dsfd")).toEqual(false);
+    });
+
+    it("should return true if instruction is place", function () {
+        expect(isValidInstruction("place")).toEqual(true);
+    });
+
+    it("should return true if instruction is move", function () {
+        expect(isValidInstruction("move")).toEqual(true);
+    });
+
+    it("should return true if instruction is left", function () {
+        expect(isValidInstruction("left")).toEqual(true);
+    });
+
+    it("should return true if instruction is right", function () {
+        expect(isValidInstruction("right")).toEqual(true);
+    });
+
+    it("should return true if instruction is report", function () {
+        expect(isValidInstruction("report")).toEqual(true);
+    });
+});
+
+describe("is empty string.", function() {
+
+    it("should return false if string is null", function () {
+        expect(isEmptyString()).toEqual(true);
+    });
+
+    it("should return false if string is empty string", function () {
+        expect(isEmptyString("")).toEqual(true);
+    });
+
+    it("should return false if string is a string of spaces", function () {
+        expect(isEmptyString("   ")).toEqual(true);
+    });
+});
 

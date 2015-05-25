@@ -1,0 +1,29 @@
+/**
+ * Author: Laura Whellans
+ *
+ * Basic Styling for User Interface
+ */
+
+.error {
+    color: red;
+    font-size: 0.8em;
+}
+
+article {
+    width: 50%;
+}
+.left {
+    float: left;
+}
+.right {
+    float: right;
+}
+
+footer {
+    padding: 5px;
+    font-size: 0.8em;
+}
+.clearfix {
+    clear: both;
+}
+
